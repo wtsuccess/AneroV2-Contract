@@ -7169,11 +7169,11 @@ export const leafNodes = [
   },
   {
     owner: "0x01d405e9053Da8EF763f714E78075d936ec1677c",
-    totalCount: 2,
+    totalCount: 12,
   },// my public key
   {
     owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-    totalCount: 3,
+    totalCount: 12,
   }, // hardhat public key for test 
 ]
  

@@ -7,7 +7,7 @@ async function main() {
   const merkleRoot: string = getMerkleRoot();
   console.log("merkleRoot: ", merkleRoot);
 
-  const baseURI: string = "ipfs/QmcZJ2AXhPAThF5qab1WHCzrPZmjTn6TfJvHB2hbDNqkb6";
+  const baseURI: string = "ipfs://QmRJWpeC41Rju3HSRtJwTpccQKsfYhW9PetCBi1kHF6Z9z/";
   const aneroV2 = await AneroV2.deploy(merkleRoot, baseURI, 5, 6334);
   await aneroV2.waitForDeployment();
   console.log("aneroV2 deployed to:", await aneroV2.getAddress());

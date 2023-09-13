@@ -38,7 +38,7 @@ describe("Airdrop", async () => {
     it("should mint new amount of NFT", async () => {
       const holder: string = user.address;
       const wrongHolder: string = "0x001cd047fa72ee0d2a25068b8996b9901c4e6920";
-      const amount: number = 3;
+      const amount: number = 12;
       const wrongHolderProof: string[] = getMerkleProof(wrongHolder, amount);
       const wrongAmountProof: string[] = getMerkleProof(holder, 5);
       const proof: string[] = getMerkleProof(holder, amount);
@@ -50,7 +50,7 @@ describe("Airdrop", async () => {
       );
 
       await aenroV2.connect(user).mint(proof, amount); // expected
-
+      console.log("balance: ", await aenroV2.balanceOf(holder))
       expect(await aenroV2.balanceOf(holder)).to.equals(amount);
       await expect(
         aenroV2.connect(user).mint(proof, amount)

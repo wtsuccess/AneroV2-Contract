@@ -23,7 +23,7 @@ contract AneroV2 is ERC721A, Ownable, ReentrancyGuard {
         merkleRoot = _merkleRoot;
     }
 
-    modifier onlyWhiteList(bytes32[] memory _proof, uint256 _amount) {
+    modifier verifyProof(bytes32[] memory _proof, uint256 _amount) {
         bytes32 _leaf = keccak256(abi.encodePacked(msg.sender, _amount));
         require(MerkleProof.verify(_proof, merkleRoot, _leaf), "invalid proof");
         _;
@@ -59,7 +59,7 @@ contract AneroV2 is ERC721A, Ownable, ReentrancyGuard {
     function mint(
         bytes32[] memory _proof,
         uint256 _amount
-    ) external onlyWhiteList(_proof, _amount) {
+    ) external verifyProof(_proof, _amount) {
         require(!claimed[msg.sender], "Already claimed");
         require(_amount > 0, "Amount must be greater than zero");
 
