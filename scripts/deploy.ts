@@ -11,7 +11,7 @@ async function main() {
   const aneroV2 = await AneroV2.deploy(merkleRoot, baseURI, 5, 6334);
   await aneroV2.waitForDeployment();
   console.log("aneroV2 deployed to:", await aneroV2.getAddress());
-} 
+}
 
 main()
   .then(() => process.exit(0))

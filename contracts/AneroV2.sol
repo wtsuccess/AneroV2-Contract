@@ -5,9 +5,10 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/token/common/ERC2981.sol";
 import "./ERC721A.sol";
 
-contract AneroV2 is ERC721A, Ownable, ReentrancyGuard, Pausable {
+contract AneroV2 is ERC721A, ERC2981, Ownable, ReentrancyGuard, Pausable {
     using Strings for uint256;
 
     bytes32 public merkleRoot;
@@ -86,5 +87,28 @@ contract AneroV2 is ERC721A, Ownable, ReentrancyGuard, Pausable {
         } else {
             _unpause();
         }
+    }
+
+     /**
+     * @dev Sets the royalty information that all ids in this contract will default to.
+     *
+     * Requirements:
+     *
+     * - `receiver` cannot be the zero address.
+     * - `feeNumerator` cannot be greater than the fee denominator.
+     */
+    function setRoyalty(address receiver, uint96 feeNumerator) external onlyOwner {
+        _setDefaultRoyalty(receiver, feeNumerator);
+    }
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC2981, ERC721A) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function deleteRoyalty() external onlyOwner {
+        _deleteDefaultRoyalty();
     }
 }

@@ -18,9 +18,19 @@ describe("Airdrop", async () => {
     const merkleRoot: string = getMerkleRoot();
     const baseURI: string =
       "ipfs/QmcZJ2AXhPAThF5qab1WHCzrPZmjTn6TfJvHB2hbDNqkb6";
-    aenroV2 = await aenroV2Factory.deploy(merkleRoot, baseURI, 6334, 6334);
+    aenroV2 = await aenroV2Factory.deploy(merkleRoot, baseURI, 5, 6334);
     await aenroV2.waitForDeployment();
   });
+
+  describe("Check interface", () => {
+    it("Support Interfaces: ", async () => {
+      // IERC2981
+      expect(await aenroV2.supportsInterface("0x2a55205a")).to.eq(true);
+
+      // IERC721
+      expect(await aenroV2.supportsInterface("0x80ac58cd")).to.eq(true);
+    })
+  })
 
   describe("setMerkleRoot", () => {
     it("should be able to set merkleRoot", async () => {
@@ -38,7 +48,7 @@ describe("Airdrop", async () => {
     it("should mint new amount of NFT", async () => {
       const holder: string = user.address;
       const wrongHolder: string = "0x001cd047fa72ee0d2a25068b8996b9901c4e6920";
-      const amount: number = 321;
+      const amount: number = 7;
       const wrongHolderProof: string[] = getMerkleProof(wrongHolder, amount);
       const wrongAmountProof: string[] = getMerkleProof(holder, 5);
       const proof: string[] = getMerkleProof(holder, amount);
