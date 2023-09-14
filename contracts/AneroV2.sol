@@ -4,9 +4,10 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "./ERC721A.sol";
 
-contract AneroV2 is ERC721A, Ownable, ReentrancyGuard {
+contract AneroV2 is ERC721A, Ownable, ReentrancyGuard, Pausable {
     using Strings for uint256;
 
     bytes32 public merkleRoot;
@@ -21,6 +22,7 @@ contract AneroV2 is ERC721A, Ownable, ReentrancyGuard {
     ) ERC721A("AneroV2", "AneroV2", maxBatchSize, collectionSize) {
         _baseTokenURI = _baseURIString;
         merkleRoot = _merkleRoot;
+        _pause();
     }
 
     modifier verifyProof(bytes32[] memory _proof, uint256 _amount) {
@@ -59,7 +61,7 @@ contract AneroV2 is ERC721A, Ownable, ReentrancyGuard {
     function mint(
         bytes32[] memory _proof,
         uint256 _amount
-    ) external verifyProof(_proof, _amount) {
+    ) external verifyProof(_proof, _amount) whenNotPaused {
         require(!claimed[msg.sender], "Already claimed");
         require(_amount > 0, "Amount must be greater than zero");
 
@@ -76,5 +78,13 @@ contract AneroV2 is ERC721A, Ownable, ReentrancyGuard {
         }
 
         claimed[msg.sender] = true;
+    }
+
+    function setPause(bool value) external onlyOwner {
+        if (value) {
+            _pause();
+        } else {
+            _unpause();
+        }
     }
 }
