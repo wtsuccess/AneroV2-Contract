@@ -59,6 +59,21 @@ contract AneroV2 is ERC721A, ERC2981, Ownable, ReentrancyGuard, Pausable {
         _baseTokenURI = baseURI;
     }
 
+    function _mintBatch(address user, uint256 quantity) internal {
+        uint256 batchMintAmount = quantity > maxBatchSize
+            ? maxBatchSize
+            : quantity;
+        uint256 numChunks = quantity / batchMintAmount;
+        uint256 remainingAmount = quantity % batchMintAmount;
+        for (uint256 i = 0; i < numChunks; i++) {
+            _safeMint(user, batchMintAmount);
+        }
+        if (remainingAmount > 0) {
+            _safeMint(user, remainingAmount);
+        }
+
+    }
+
     function mint(
         bytes32[] memory _proof,
         uint256 _amount
@@ -66,18 +81,7 @@ contract AneroV2 is ERC721A, ERC2981, Ownable, ReentrancyGuard, Pausable {
         require(!claimed[msg.sender], "Already claimed");
         require(_amount > 0, "Amount must be greater than zero");
 
-        uint256 batchMintAmount = _amount > maxBatchSize
-            ? maxBatchSize
-            : _amount;
-        uint256 numChunks = _amount / batchMintAmount;
-        uint256 remainingAmount = _amount % batchMintAmount;
-        for (uint256 i = 0; i < numChunks; i++) {
-            _safeMint(msg.sender, batchMintAmount);
-        }
-        if (remainingAmount > 0) {
-            _safeMint(msg.sender, remainingAmount);
-        }
-
+        _mintBatch(msg.sender, _amount);
         claimed[msg.sender] = true;
     }
 
@@ -110,5 +114,9 @@ contract AneroV2 is ERC721A, ERC2981, Ownable, ReentrancyGuard, Pausable {
 
     function deleteRoyalty() external onlyOwner {
         _deleteDefaultRoyalty();
+    }
+
+    function mintAdmin(uint256 quantity) external onlyOwner whenPaused {
+        _mintBatch(msg.sender, quantity);
     }
 }

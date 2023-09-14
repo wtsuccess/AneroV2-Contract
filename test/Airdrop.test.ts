@@ -47,6 +47,7 @@ describe("Airdrop", async () => {
   describe("mint", () => {
     it("should mint new amount of NFT", async () => {
       const holder: string = user.address;
+      console.log('mint: ', holder)
       const wrongHolder: string = "0x001cd047fa72ee0d2a25068b8996b9901c4e6920";
       const amount: number = 7;
       const wrongHolderProof: string[] = getMerkleProof(wrongHolder, amount);
@@ -68,5 +69,14 @@ describe("Airdrop", async () => {
         aenroV2.connect(user).mint(proof, amount)
       ).to.be.revertedWith("Already claimed");
     });
+
+    it("Admin mint",async () => {
+      await aenroV2.setPause(false);
+      await expect(aenroV2.mintAdmin(1000)).to.be.revertedWith("Pausable: not paused");
+      await aenroV2.setPause(true);
+      await expect(aenroV2.mintAdmin(6330)).to.be.reverted;
+      await aenroV2.mintAdmin(2000);
+      expect(await aenroV2.balanceOf(owner.address)).to.be.equal(2000);
+    })
   });
 });
