@@ -7130,9 +7130,5 @@ export const leafNodes = [
   {
     owner: "0xfffc0439aadcde1a502abe8ea74ab25a72dcfa68",
     totalCount: 7,
-  },
-  {
-    owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-    totalCount: 7
   }
 ];
